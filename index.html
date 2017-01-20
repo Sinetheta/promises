@@ -1,50 +1,229 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/js.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1><span class="inverse">&nbsp;JS&nbsp;</span> Promises</h1>
+        </section>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+        <section>
+          <h2>A Promise is...</h2>
+          <p>
+            <span class="fragment">A proxy for a future return value,</span>
+            <span class="fragment">which allows us write asynchronous code proceduraly</span>
+            <span class="fragment">and respond to eventual success or failure.</span>
+          </p>
+        </section>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+        <section>
+          <iframe src='https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=12A0hSnDQCJB6yVA-wKBZdy419Iavlqd7UWPXJdkSmfc&font=Default&lang=en&initial_zoom=2&height=650' width='100%' height='650' webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+        </section>
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+        <section>
+          <h2>Promises A+</h2>
+          <p>An open standard for sound, interoperable JavaScript promises—by implementers, for implementers.</p>
+          <p><a href="https://promisesaplus.com/" target="_blank">https://promisesaplus.com/</a></p>
+        </section>
+
+        <section>
+          <img src="images/lifecycle.png">
+        </section>
+
+        <section>
+          <h2>Deferred vs Promise vs Future</h2>
+          <p class="fragment">Deferred: implements <code>resolve</code> and <code>reject</code></p>
+          <p class="fragment">Promise: proxy object, exposes <code>then</code></p>
+          <p class="fragment">Future: deprecated term</p>
+        </section>
+
+        <section>
+          <pre><code>
+var promise = new Promise(function(resolve, reject) {
+  // do a thing, possibly async, then…
+
+  if (/* everything turned out fine */) {
+    resolve("Stuff worked!");
+  }
+  else {
+    reject(Error("It broke"));
+  }
+});
+          </code></pre>
+          <pre class="fragment"><code>
+promise.then(function(result) {
+  console.log(result); // "Stuff worked!"
+}, function(err) {
+  console.log(err); // Error: "It broke"
+});
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Concurrency in the browser</h2>
+          <ul>
+            <li class="fragment">Ajax</li>
+            <li class="fragment">User interactions</li>
+            <li class="fragment">Animations</li>
+            <li class="fragment">Web workers</li>
+          </ul>
+        </section>
+
+        <section>
+          <pre><code>
+$.ajax({
+  url: 'url',
+  success: function() {
+    // success
+  },
+  error: function() {
+    // error
+  }
+})
+          </code></pre>
+          <pre><code>
+$.ajax('url')
+  .then(function() {
+    // success
+  }, function() {
+    // error
+  });
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+a(function(resultFromA) {
+  b(resultFromA, function(resultFromB) {
+    c(resultFromB, function(resultFromC) {
+      d(resultFromB, function(resultFromD) {
+        e(resultFromB, function(resultFromE) {
+          console.log(resultFromE);
+        });
+      });
+    });
+  });
+});
+          </code></pre>
+          <pre class="fragment"><code>
+a()
+  .then(b)
+  .then(c)
+  .then(d)
+  .then(e)
+  .then(console.log);
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>$.ajax</h2>
+          <pre><code>
+$.ajax('http://www.setgetgo.com/randomword/get.php')
+.then(function() {
+  debugger
+}, function() {
+  debugger
+});
+console.log('gotta go fast');
+          </code></pre>
+        </section>
+
+
+        <section>
+          <pre><code>
+$.when(
+  getThing(),
+  getOtherThing()
+).then(function () {
+  // both things are here!
+});
+          </code></pre>
+        </section>
+
+        <section>
+          <img src="images/goog-thenable.png">
+        </section>
+
+        <section>
+          <pre><code>
+addToCart: function(variant, quantity) {
+  let dfd = $.Deferred();
+
+  analytics.track('Product Added', {...}, dfd.resolve);
+
+  return dfd.promise();
+}
+          </code></pre>
+          <pre class="fragment"><code>
+$('.kit-form').submit(function(e) {
+  e.preventDefault();
+  let quantity = $('#quantity').val();
+  Segment.addToCart(selectedVariant(), quantity)
+    .then(function() { e.target.submit() });
+});
+          </code></pre>
+        </section>
+
+        <section>
+          <h3></h3>
+          <pre><code>
+require('fs').readFile('a.txt', (err, data) => {
+  if (err) {
+    return console.error(err);
+  }
+  console.log(data);
+});
+          </code></pre>
+          <pre class="fragment"><code>
+var readFile = Promise.promisify(require("fs").readFile);
+
+readFile('a.txt')
+  .then(console.log)
+  .catch(console.error);
+          </code></pre>
+          <a href="https://stembolt.com/blog/taming-3rd-party-apis-with-javascript-promises/" class="fragment">Taming 3rd party APIs with javascript promises</a>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
 </html>
