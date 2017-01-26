@@ -1,48 +1,86 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/js.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/js.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-		<script src="node_modules/jquery/dist/jquery.js"></script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>
-					<h1><span class="inverse">&nbsp;JS&nbsp;</span> Promises</h1>
-				</section>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1><span class="inverse">&nbsp;JS&nbsp;</span> Promises</h1>
+        </section>
 
-				<section>
-					<section>
-						<h2>Concurreny in the browser</h2>
-						<ul>
-							<li class="fragment">Ajax</li>
-							<li class="fragment">Animations</li>
-							<li class="fragment">User interactions</li>
-							<li class="fragment">Web workers</li>
-						</ul>
-					</section>
+        <section>
+          <ul>
+            <li class="fragment">A proxy for a future return value</li>
+            <li class="fragment">Allows us to respond to eventual success or failure</li>
+            <li class="fragment">Let's us write asynchronous code proceduraly</li>
+          </ul>
+        </section>
 
-					<section>
-						<h2>$.ajax</h2>
-						<pre><code>
+        <section>
+          <iframe src='https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=12A0hSnDQCJB6yVA-wKBZdy419Iavlqd7UWPXJdkSmfc&font=Default&lang=en&initial_zoom=2&height=650' width='100%' height='650' webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+        </section>
+
+        <section>
+          <img src="/images/lifecycle.png">
+        </section>
+
+        <section>
+          <pre><code>
+var promise = new Promise(function(resolve, reject) {
+  // do a thing, possibly async, then…
+
+  if (/* everything turned out fine */) {
+    resolve("Stuff worked!");
+  }
+  else {
+    reject(Error("It broke"));
+  }
+});
+          </code></pre>
+          <pre class="fragment"><code>
+promise.then(function(result) {
+  console.log(result); // "Stuff worked!"
+}, function(err) {
+  console.log(err); // Error: "It broke"
+});
+          </code></pre>
+        </section>
+
+        <section>
+          <section>
+            <h2>Concurreny in the browser</h2>
+            <ul>
+              <li class="fragment">Ajax</li>
+              <li class="fragment">Animations</li>
+              <li class="fragment">User interactions</li>
+              <li class="fragment">Web workers</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>$.ajax</h2>
+            <pre><code>
 $.ajax('http://www.setgetgo.com/randomword/get.php')
   .then(function() {
     debugger
@@ -50,38 +88,53 @@ $.ajax('http://www.setgetgo.com/randomword/get.php')
     debugger
   });
   console.log('gotta go fast');
-						</code></pre>
-					</section>
+            </code></pre>
+          </section>
 
-					<section>
-						<h2>Animation</h2>
-						<pre><code>
-document.getElementById('box')
-  .animate([{ opacity: 1 }, { opacity: 0 }], 1000)
-	.then(function() {debugger})
-						</code></pre>
-						<div id="box" style="width: 100px; height: 100px; margin: 0 auto; background: cyan;"></div>
-					</section>
-				</section>
-			</div>
-		</div>
+          <section>
+            <h2>Animation</h2>
+            <pre><code>
+$.Velocity
+  .animate($("div"), { opacity: 0 }, 1250)
+  .then(function() {
+    alert("Promise fulfilled!");
+  });
+            </code></pre>
+            <p><a href="http://codepen.io/julianshapiro/full/jIoca/" target="_blank">codepen</a></p>
+          </section>
+        </section>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+        <section>
+          <h2>$.ajax</h2>
+          <pre><code>
+$.ajax('http://www.setgetgo.com/randomword/get.php')
+.then(function() {
+  debugger
+}, function() {
+  debugger
+});
+console.log('gotta go fast');
+          </code></pre>
+        </section>
+      </div>
+    </div>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+    <script>
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
 </html>
